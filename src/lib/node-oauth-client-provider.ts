@@ -1,5 +1,5 @@
 import open from 'open'
-import { OAuthClientProvider } from '@modelcontextprotocol/sdk/client/auth.js'
+import { OAuthClientProvider, OAuthDiscoveryState } from '@modelcontextprotocol/sdk/client/auth.js'
 import {
   OAuthClientInformationFull,
   OAuthClientInformationFullSchema,
@@ -34,6 +34,7 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
   private authorizationServerMetadata: AuthorizationServerMetadata | undefined
   private protectedResourceMetadata: ProtectedResourceMetadata | undefined
   private wwwAuthenticateScope: string | undefined
+  private authorizationServerUrl: string
 
   /**
    * Creates a new NodeOAuthClientProvider
@@ -54,6 +55,7 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
     this.authorizationServerMetadata = options.authorizationServerMetadata
     this.protectedResourceMetadata = options.protectedResourceMetadata
     this.wwwAuthenticateScope = options.wwwAuthenticateScope
+    this.authorizationServerUrl = options.serverUrl
   }
 
   get redirectUrl(): string {
@@ -337,4 +339,13 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
         throw new Error(`Unknown credential scope: ${scope}`)
     }
   }
+
+  async discoveryState(): Promise<OAuthDiscoveryState> {
+    return {
+      authorizationServerUrl: this.authorizationServerUrl,
+      resourceMetadata: this.protectedResourceMetadata
+    }
+  }
+
+
 }

@@ -29,13 +29,11 @@ export interface AuthorizationServerMetadata {
  * @returns The well-known metadata URL
  */
 export function getMetadataUrl(serverUrl: string): string {
-  const url = new URL(serverUrl)
-  // Per RFC 8414, the metadata is at /.well-known/oauth-authorization-server
-  // relative to the issuer identifier
-  const metadataPath = '/.well-known/oauth-authorization-server'
-
-  // Construct the full metadata URL
-  return `${url.origin}${metadataPath}`
+  //serverUrl is already the issuerUrl
+  if (serverUrl.endsWith('/')) {
+    serverUrl = serverUrl.slice(0, -1)
+  }
+  return serverUrl + '/.well-known/oauth-authorization-server'
 }
 
 /**
